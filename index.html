@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrendBazaar – Your One-Stop Shop</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(120deg, #e7d5fe 0%, #bce1fd 100%);
+      color: #333;
+      min-height: 100vh;
+      transition: background 0.5s;
+    }
+
+    header {
+      background: linear-gradient(to right, #3399ff 65%, #b6ffe8 100%);
+      color: white;
+      padding: 35px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(52, 152, 219, 0.19);
+      border-bottom: 4px solid #ffe867;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      animation: headerEntry 0.75s;
+      border-radius: 0 0 1.6em 1.6em;
+    }
+    @keyframes headerEntry {
+      0% { opacity:0; transform:translateY(-40px);}
+      100% { opacity:1; transform:translateY(0);}
+    }
+    header h1 {
+      font-size: 40px;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px #e0ffff, 0 0 30px #eee0ff;
+      font-weight: 850;
+      filter: drop-shadow(0 0 2px #b6ffe8);
+    }
+    nav a {
+      color: #3399ff;
+      margin: 0 16px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 18px;
+      transition: color 0.3s, text-shadow 0.5s;
+      position: relative;
+      border-radius: 7px;
+      padding: 6px 13px;
+      background: linear-gradient(90deg, #e7fcff 60%, #e8e4fc 100%);
+      box-shadow: 0 0 9px #b6ffe86e;
+    }
+    nav a::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -3px;
+      width: 0; height: 3px;
+      background: #ffe867;
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+    nav a:hover {
+      color: #ffe867;
+      text-shadow: 0 0 14px #ffe867, 0 0 6px #b6ffe8;
+      background: linear-gradient(100deg, #b6ffe8 20%, #ffe867 80%);
+    }
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    .menu-icon {
+      font-size: 32px;
+      cursor: pointer;
+      color: #6feeff;
+      filter: drop-shadow(0 0 7px #ffe867);
+      transition: filter 0.3s;
+      animation: glowMenu 2s infinite alternate;
+      border-radius: 10px;
+      background: linear-gradient(70deg, #f1ffe7 70%, #d5fcf7 100%);
+      box-shadow: 0 0 16px #ffe86799;
+      padding: 6px 10px 5px 10px;
+    }
+    @keyframes glowMenu {
+      0% { filter: drop-shadow(0 0 8px #ffe867);}
+      100% { filter: drop-shadow(0 0 24px #b6ffe8);}
+    }
+
+    .side-menu {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: linear-gradient(137deg, #d7ffe0 50%, #e0f6ff 100%);
+      box-shadow: 2px 0 20px #b6ffe880, 2px 0 8px #ffe86770;
+      color: #4e73d1;
+      overflow-x: hidden;
+      transition: width 0.6s cubic-bezier(0.77,0,0.175,1);
+      padding-top: 60px;
+      z-index: 1000;
+      border-radius: 0 2.5em 2.5em 0;
+      border-right: 2.5px solid #ffe867;
+    }
+    .side-menu a {
+      padding: 15px 30px;
+      margin-bottom: 0px;
+      text-decoration: none;
+      color: #217dbb;
+      display: block;
+      font-size: 19px;
+      border-left: 4px solid transparent;
+      border-radius: 0 20px 20px 0;
+      transition: background 0.26s, border-color 0.25s;
+      background: linear-gradient(90deg, #ebfff8 55%, #edf8ff 100%);
+      font-weight: 600;
+      box-shadow: 0 4px 10px #b6ffe831;
+    }
+    .side-menu a:hover {
+      background: linear-gradient(90deg, #d7fff0 60%, #ffe867 100%);
+      border-left: 4px solid #ffe867;
+      color: #217dbb;
+      text-shadow: 0 0 14px #ffe867;
+    }
+    .side-menu .close-btn {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      font-size: 32px;
+      cursor: pointer;
+      color: #ffe867;
+      text-shadow: 0 0 12px #b6ffe8;
+      border-radius: 50%;
+      background: #ecfff5;
+      padding: 2px 10px;
+    }
+    .side-menu .close-btn:hover{
+      color: #ea8d1b;
+      background: #ffe867;
+      box-shadow: 0 0 8px #ea8d1b56;
+    }
+    .top-right {
+  position: absolute;
+  right: 28px;
+  top: 21px;
+  color: #111; /* <-- This makes the font black! */
+  font-weight: 700;
+  text-shadow: none;
+}
+
+    .hero {
+      text-align: center;
+      padding: 70px 20px 60px;
+      margin: 38px auto;
+      max-width: 900px;
+      position: relative;
+      animation: heroEntry 0.8s;
+      border-radius: 45px;
+      /* Animate border using background-clip! */
+      background: 
+        linear-gradient(120deg,#ffe867 10%, #b6ffe8 40%, #8ec5fc 80%, #fcf5ff 100%),
+        linear-gradient(115deg, #f6faff 80%, #e0ffff 100%);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      border: 5px solid transparent;
+      box-shadow: 0 0 0 9px #ffcbe560, 0 6px 48px #eefcff2a;
+      position: relative;
+      overflow: hidden;
+      z-index: 2;
+    }
+    @keyframes heroEntry {
+      0% { opacity:0; transform: scale(0.97);}
+      100% { opacity:1; transform: scale(1);}
+    }
+    .hero::before {
+      content: '';
+      z-index: 0;
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, #bce1fd 50%, #ffe867 100%);
+      opacity: 0.28;
+      filter: blur(22px);
+      animation: rotateBG 6s linear infinite alternate-reverse;
+    }
+    @keyframes rotateBG {
+      0%{filter:blur(22px) hue-rotate(0deg);}
+      100%{filter:blur(27px) hue-rotate(45deg);}
+    }
+    .hero h2 {
+      font-size: 50px;
+      margin-bottom: 18px;
+      color: #217dbb;
+      text-shadow: 0 0 16px #ffe86760, 0 0 6px #b6ffe8;
+      letter-spacing: 0.5px;
+      font-weight: 900;
+      filter: drop-shadow(0 0 8px #e0fff4ad);
+      animation: textGlowPulse 2.8s infinite alternate;
+      position: relative;
+      z-index: 1;
+    }
+    @keyframes textGlowPulse {
+      from { text-shadow: 0 0 16px #ffe867b4;}
+      to { text-shadow: 0 0 32px #b6ffe8, 0 0 18px #ffe867c4;}
+    }
+    .hero p {
+      font-size: 26px;
+      margin-bottom: 36px;
+      color: #3399ff;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-shadow: 0 0 8px #b6ffe8, 0 0 2px #f8ffe7;
+      z-index: 1;
+      position: relative;
+    }
+    .hero button {
+      padding: 17px 60px;
+      font-size: 22px;
+      background: linear-gradient(
+        265deg, #b6ffe8 5%, #ffe867 55%, #3399ff 100%);
+      color: #454545;
+      border: 0;
+      border-radius: 19px;
+      cursor: pointer;
+      box-shadow: 0 6px 34px #b6ffe830, 0 0 26px #fcf8e074;
+      font-weight: 700;
+      position: relative;
+      outline: 3.5px solid #69ece6df;
+      outline-offset: 4px;
+      z-index: 1;
+      transition: background 0.28s, transform 0.17s, box-shadow 0.25s, color 0.2s;
+      animation: pulseGlow 1.8s infinite alternate;
+    }
+    @keyframes pulseGlow {
+      from { box-shadow: 0 6px 24px #ffe86722;}
+      to { box-shadow: 0 0 60px #b6ffe8a4; transform: scale(1.045);}
+    }
+    .hero button:hover {
+      background: linear-gradient(265deg, #3399ff 48%, #ffd700 90%);
+      transform: scale(1.09) rotate(-1deg);
+      color: #fff;
+      box-shadow: 0 0 40px #ffe86772;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 40px 22px 35px;
+      background: #fcfbff;
+      border-radius: 24px;
+      box-shadow: 0 3px 18px #b6ffe814;
+      margin-bottom: 32px;
+      border-left: 5px solid #b6ffe8;
+      border-right: 5px solid #ffe867;
+    }
+    main h2 {
+      margin: 38px 0 16px;
+      font-size: 28px;
+      color: #3399ff;
+      border-bottom: 3px solid #ffe867;
+      padding-bottom: 4px;
+      letter-spacing: 0.7px;
+      font-weight: 800;
+      text-shadow: 0 0 14px #e0c3fc66, 0 0 5px #b6ffe8;
+      background: linear-gradient(to right,#fafffa, #b6ffe8 34%, #e0c3fc 100%);
+      border-radius: 9px;
+    }
+    .category-list {
+      list-style: none;
+      display: flex;
+      justify-content: space-evenly;
+      gap: 24px;
+      padding: 15px 0;
+      animation: fadeIn 0.8s;
+    }
+    @keyframes fadeIn {
+      from { opacity:0;}
+      to {opacity:1;}
+    }
+    .category-list li {
+      font-size: 22px;
+      padding: 17px 28px;
+      background: linear-gradient(70deg, #f1fcff 50%, #e7ffe7 100%);
+      border-radius: 20px;
+      transition: transform 0.22s, background 0.26s, box-shadow 0.31s, color 0.19s;
+      cursor: pointer;
+      box-shadow: 0 2px 17px #b6ffe819;
+      border: 2.5px solid #ffe867;
+      text-align: center;
+      font-weight: 700;
+      color: #217dbb;
+      letter-spacing: 0.28px;
+      outline: 1.5px solid #b6ffe8;
+    }
+    .category-list li:hover {
+      background: linear-gradient(60deg, #ffe867 48%, #b6ffe8 100%);
+      color: #3399ff;
+      transform: scale(1.13) translateY(-8px) rotate(-2deg);
+      box-shadow: 0 0 30px #ffe86778;
+      border: 2.5px solid #b6ffe8;
+    }
+
+    .deal-box {
+      background: linear-gradient(100deg, #fcffe7 75%, #e7fffc 100%);
+      padding: 24px;
+      border-radius: 20px;
+      font-size: 20px;
+      line-height: 2;
+      box-shadow: 0 2px 15px #b6ffe812,0 0 0 4px #ecefff20;
+      margin-bottom: 23px;
+      border: 2.5px dashed #ffe867;
+      animation: dealFadeIn 1s;
+      color: #217dbb;
+    }
+    @keyframes dealFadeIn {from {opacity:0;} to {opacity:1;}}
+    blockquote {
+      margin: 16px 0;
+      padding: 18px 22px;
+      background: linear-gradient(100deg, #f5f8fd 88%, #e0faff 100%);
+      border-left: 9px solid #b6ffe8;
+      font-style: italic;
+      border-radius: 13px;
+      font-size: 19px;
+      box-shadow: 0 2px 12px #b6ffe81e;
+      transition: box-shadow 0.3s;
+      animation: fadeIn 0.64s;
+    }
+    blockquote:hover {
+      box-shadow: 0 0 22px #ffe86738;
+      border-left: 9px solid #ffe867;
+    }
+
+    footer {
+      background: linear-gradient(90deg, #3399ff 75%, #b6ffe8 100%);
+      color: white;
+      text-align: center;
+      padding: 19px 5px;
+      border-top: 3px solid #ffe867;
+      box-shadow: 0 -2px 8px #b6ffe812;
+      font-size: 18px;
+      letter-spacing: 0.4px;
+      font-weight: 700;
+      border-radius: 2em 2em 0 0;
+    }
+    footer a {
+      color: #ffe867;
+      text-decoration: none;
+      font-weight: 700;
+      transition: color 0.31s, text-shadow 0.29s;
+      border-radius: 6px;
+      padding: 3px 9px;
+    }
+    footer a:hover {
+      color: #3399ff;
+      text-shadow: 0 0 9px #ffe867e4;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%; height: 100%;
+      background: rgba(52, 153, 219, 0.13);
+      animation: modalFadeIn 0.35s;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0;}
+      to { opacity: 1;}
+    }
+    .modal-content {
+      background: linear-gradient(112deg, #e7fffc 90%, #fcfdeb 100%);
+      margin: 4% auto;
+      padding: 28px;
+      width: 400px;
+      text-align: center;
+      border-radius: 21px;
+      box-shadow: 0 4px 26px #b6ffe85a, 0 0 10px #ffe8671a;
+      border: 2px solid #ffe86777;
+      animation: popInModal 0.34s;
+    }
+    @keyframes popInModal {
+      from { transform:scale(0.93);}
+      to { transform:scale(1);}
+    }
+    .modal-content h2, .modal-content h3 {
+      margin-bottom: 18px;
+      color: #3399ff;
+      font-weight: 900;
+      font-size: 24px;
+      letter-spacing: 0.7px;
+      text-shadow: 0 0 9px #ffe86744;
+      border-bottom: 2px solid #b6ffe8;
+      border-radius: 7px;
+      padding-bottom: 5px;
+      background: linear-gradient(90deg,#ebfff8 60%, #edefff 100%);
+    }
+    .modal .close {
+      float: right;
+      cursor: pointer;
+      font-size: 29px;
+      color: #ea8d1b;
+      font-weight: 900;
+    }
+    .form-group {
+      margin-bottom: 17px;
+      text-align: left;
+      font-size: 17px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 800;
+      margin-bottom: 7px;
+      color: #3399ff;
+      text-shadow: 0 0 6px #b6ffe840;
+    }
+    .form-group input, .modal-content select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #b6ffe869;
+      border-radius: 11px;
+      font-size: 16px;
+      margin-bottom: 10px;
+      outline: none;
+      transition: border-color 0.3s;
+      background: #f6fcff;
+    }
+    .form-group input:focus, .modal-content select:focus {
+      border-color: #ffe867;
+      box-shadow: 0 0 13px #ffe86742;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(90deg,#b6ffe8, #ffe867 90%);
+      color: #217dbb;
+      border: none;
+      border-radius: 13px;
+      font-size: 19px;
+      cursor: pointer;
+      font-weight: 800;
+      margin-top: 11px;
+      transition: background 0.27s, box-shadow 0.27s, color 0.16s;
+      box-shadow: 0 2px 16px #b6ffe833;
+    }
+    .btn:hover {
+      background: linear-gradient(96deg,#ffe867, #b6ffe8);
+      color: #fff;
+      box-shadow: 0 0 17px #ffe86760;
+    }
+    .card-item {
+      background: #fcfff8;
+      border: 2.5px solid #b6ffe880;
+      padding: 11px 12px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 700;
+      letter-spacing: 0.25px;
+      transition: box-shadow 0.21s, border-color 0.24s;
+    }
+    .card-item:hover {
+      box-shadow: 0 2px 16px #ffe86740;
+      border: 2.5px solid #ffe867;
+    }
+    .delete-btn { background: linear-gradient(90deg,#ff8787,#ffe2e2); }
+    .delete-btn:hover { background: linear-gradient(90deg, #e74c3c,#ffe2e2);}
+    .muted { color: #666; font-size: 14px; }
+    select { font-size: 16px; margin-top: 5px; border-radius:9px;}
+
+    @media(max-width:800px){
+      main, .hero { max-width:98vw;}
+      header, footer { padding:18px 7vw;}
+      .hero h2{ font-size:32px;}
+      .category-list{flex-direction:column; gap:14px;}
+    }
+    @media(max-width:500px){
+      main, .hero, .modal-content { padding:7px;}
+      .hero button{font-size:15px; padding:7px 13px;}
+      .modal-content{width:94vw;}
+      .hero h2{font-size:20px;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="menu-icon" onclick="openMenu()">☰</span>
+    <h1>🛍 TrendBazaar</h1>
+    <nav>
+      <a href="index.html"><i class="fa fa-home"></i> Home</a>
+      <a href="product.html"><i class="fa fa-box"></i> Products</a>
+      <a href="contact.html"><i class="fa fa-phone"></i> Contact</a>
+    </nav>
+    <div id="userStatus" class="top-right"></div>
+  </header>
+  <div id="sideMenu" class="side-menu">
+    <span class="close-btn" onclick="closeMenu()">&times;</span>
+    <a href="#" onclick="openLanguages()"><i class="fa fa-language"></i> 🌐 Change Language</a>
+    <a href="#" onclick="openProfile()"><i class="fa fa-user-edit"></i> ✏ Edit Profile</a>
+    <a href="#" onclick="openCards()"><i class="fa fa-credit-card"></i> 💳 Saved Cards</a>
+    <a href="#" onclick="openAddress()"><i class="fa fa-map-marker-alt"></i> 📍 Saved Address</a>
+    <a href="#" onclick="openNotifications()"><i class="fa fa-bell"></i> 🔔 Notifications</a>
+    <a href="#" onclick="openPrivacy()"><i class="fa fa-shield-alt"></i> 🔒 Privacy Center</a>
+    <a href="#" id="loginLink" onclick="openLogin()"><i class="fa fa-envelope"></i> 📧 Login / Signup</a>
+    <a href="index.html"><i class="fa fa-globe"></i> 🌍 TrendBazaar Website</a>
+    <a href="#" id="logoutLink" style="display:none" onclick="logout()"><i class="fa fa-sign-out-alt"></i> 🚪 Log Out</a>
+  </div>
+  <section class="hero">
+    <h2 id="title">Welcome to TrendBazaar</h2>
+    <p id="subtitle">Fashion, Electronics & More – All in One Place</p>
+    <a href="category.html"><button>🛒 Start Shopping</button></a>
+  </section>
+  <main>
+    <h2>Shop by Categories</h2>
+    <ul class="category-list">
+      <li><i class="fa fa-tshirt"></i> Clothing</li>
+      <li><i class="fa fa-mobile-alt"></i> Electronics</li>
+      <li><i class="fa fa-couch"></i> Home Essentials</li>
+      <li><i class="fa fa-gem"></i> Jewelry</li>
+    </ul>
+    <h2>🔥 Today’s Deals</h2>
+    <div class="deal-box">
+      <p>👕 50% Off – Men’s T-Shirts</p>
+      <p>⌚ Smartwatch Only ₹999</p>
+      <p>🍳 Kitchen Essentials – 30% Off</p>
+    </div>
+    <h2>Customer Reviews</h2>
+    <blockquote>“Excellent quality & fast delivery!” – Priya</blockquote>
+    <blockquote>“My favorite store for fashion & gadgets!” – Rahul</blockquote>
+  </main>
+  <footer>
+    <p>© 2025 TrendBazaar | Follow us on <a href="#">Instagram</a> | <a href="#">Facebook</a> | <a href="#">WhatsApp</a></p>
+  </footer>
+  <!-- Language Modal -->
+  <div id="langModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeLanguages()">&times;</span>
+      <h2>Select Language</h2>
+      <select id="languageSelect" onchange="changeLanguage()">
+        <option value="en">English</option>
+        <option value="te">తెలుగు</option>
+        <option value="hi">हिन्दी</option>
+        <option value="ta">தமிழ்</option>
+        <option value="kn">ಕನ್ನಡ</option>
+        <option value="ml">മലയാളം</option>
+      </select>
+    </div>
+  </div>
+  <!-- Profile modal -->
+  <div id="profileModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeProfile()">&times;</span>
+      <h2>Edit Profile</h2>
+      <div class="form-group">
+        <label for="name">👤 Full Name</label>
+        <input type="text" id="name" placeholder="Enter your name" required />
+      </div>
+      <div class="form-group">
+        <label for="emailProfile">📧 Email</label>
+        <input type="email" id="emailProfile" placeholder="Enter your email" required />
+      </div>
+      <div class="form-group">
+        <label for="phone">📱 Phone Number</label>
+        <input type="tel" id="phone" placeholder="Enter your phone" required />
+      </div>
+      <button type="submit" class="btn" onclick="saveProfile(event)">💾 Save Changes</button>
+    </div>
+  </div>
+  <!-- Login Modal -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeLogin()">&times;</span>
+    <h2>📧 Login</h2>
+    <div class="form-group">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" placeholder="you@example.com" />
+    </div>
+    <div class="form-group">
+      <label for="loginPass">Password</label>
+      <input type="password" id="loginPass" placeholder="Password" />
+    </div>
+    <button class="btn" onclick="login()">Login</button>
+    <p class="muted">
+      <a href="#" onclick="openForgotPassword()">Forgot Password?</a>
+    </p>
+    <p class="muted">
+      Not registered? <a href="#" onclick="openSignupFromLogin()">Create an account</a>
+    </p>
+  </div>
+</div>
+<!-- Signup Modal -->
+<div id="signupModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeSignup()">&times;</span>
+    <h2>🆕 Sign Up</h2>
+    <div class="form-group">
+      <label for="signupName">Full Name</label>
+      <input type="text" id="signupName" placeholder="Your name" />
+    </div>
+    <div class="form-group">
+      <label for="signupEmail">Email</label>
+      <input type="email" id="signupEmail" placeholder="you@example.com" />
+    </div>
+    <div class="form-group">
+      <label for="signupPass">Password</label>
+      <input type="password" id="signupPass" placeholder="At least 6 characters" />
+    </div>
+    <button class="btn" onclick="signup()">Create Account</button>
+    <p class="muted">Already have account? <a href="#" onclick="openLoginFromSignup()">Login</a></p>
+  </div>
+</div>
+  <!-- Cards Modal -->
+  <div id="cardsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeCards()">&times;</span>
+      <h2>💳 Saved Cards</h2>
+      <div id="card-list"></div>
+      <h3>Add New Card</h3>
+      <div class="form-group">
+        <label for="cardNumber">Card Number</label>
+        <input type="text" id="cardNumber" placeholder="XXXX-XXXX-XXXX-1234" maxlength="19" />
+      </div>
+      <div class="form-group">
+        <label for="cardName">Card Holder Name</label>
+        <input type="text" id="cardName" placeholder="John Doe" />
+      </div>
+      <div class="form-group">
+        <label for="expiry">Expiry Date</label>
+        <input type="text" id="expiry" placeholder="MM/YY" maxlength="5" />
+      </div>
+      <button class="btn" onclick="addCard()">+ Save Card</button>
+    </div>
+  </div>
+  <!-- Address Modal -->
+  <div id="addressModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeAddress()">&times;</span>
+      <h2>📍 Saved Addresses</h2>
+      <div id="address-list"></div>
+      <h3>Add New Address</h3>
+      <div class="form-group">
+        <label for="addressType">Address Type</label>
+        <input type="text" id="addressType" placeholder="Home / Office" />
+      </div>
+      <div class="form-group">
+        <label for="fullAddress">Full Address</label>
+        <input type="text" id="fullAddress" placeholder="Street, City, State, Pincode" />
+      </div>
+      <div class="form-group">
+        <label for="landmark">Landmark</label>
+        <input type="text" id="landmark" placeholder="Nearby landmark" />
+      </div>
+      <div class="form-group">
+        <label for="addressPhone">Phone Number</label>
+        <input type="tel" id="addressPhone" placeholder="Contact number" />
+      </div>
+      <button class="btn" onclick="addAddress()">+ Save Address</button>
+    </div>
+  </div>
+  <!-- Notifications Modal -->
+  <div id="notificationsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeNotifications()">&times;</span>
+      <h2>🔔 Notifications</h2>
+      <div id="notification-list"></div>
+      <h3>Add New Notification</h3>
+      <div class="form-group">
+        <label for="notifText">Notification Message</label>
+        <input type="text" id="notifText" placeholder="Enter notification" />
+      </div>
+      <button class="btn" onclick="addNotification()">+ Save Notification</button>
+    </div>
+  </div>
+  <!-- Privacy Modal -->
+  <div id="privacyModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closePrivacy()">&times;</span>
+      <h2>🔒 Privacy Center</h2>
+      <div class="form-group">
+        <label><input type="checkbox" id="twoFA" /> Enable Two-Factor Authentication</label>
+      </div>
+      <div class="form-group">
+        <button class="btn" onclick="downloadData()">⬇ Download My Data</button>
+      </div>
+      <div class="form-group">
+        <button class="btn delete-btn" onclick="deleteAccount()">❌ Delete My Account</button>
+      </div>
+    </div>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB_OWHIrjBOkunmFMyUGgvXjOstZj8BhNQ",
+      authDomain: "trendbazaar-e8332.firebaseapp.com",
+      projectId: "trendbazaar-e8332",
+      storageBucket: "trendbazaar-e8332.appspot.com",
+      messagingSenderId: "1234567890",
+      appId: "1:926227745803:web:f08e4395e627a2568b0b0e"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    function openMenu() { document.getElementById("sideMenu").style.width = "250px"; }
+    function closeMenu() { document.getElementById("sideMenu").style.width = "0"; }
+    function openLanguages() { document.getElementById("langModal").style.display = "block"; }
+    function closeLanguages() { document.getElementById("langModal").style.display = "none"; }
+    function openProfile() { document.getElementById("profileModal").style.display = "block"; }
+    function closeProfile() { document.getElementById("profileModal").style.display = "none"; }
+    function openCards() { document.getElementById("cardsModal").style.display = "block"; displayCards(); }
+    function closeCards() { document.getElementById("cardsModal").style.display = "none"; }
+    function openAddress() { document.getElementById("addressModal").style.display = "block"; displayAddresses(); }
+    function closeAddress() { document.getElementById("addressModal").style.display = "none"; }
+    function openNotifications() { document.getElementById("notificationsModal").style.display = "block"; displayNotifications(); }
+    function closeNotifications() { document.getElementById("notificationsModal").style.display = "none"; }
+    function openPrivacy() { document.getElementById("privacyModal").style.display = "block"; }
+    function closePrivacy() { document.getElementById("privacyModal").style.display = "none"; }
+    function openLogin() { document.getElementById('loginModal').style.display = 'block'; }
+    function closeLogin() { document.getElementById('loginModal').style.display = 'none'; }
+    function openSignup() { document.getElementById('signupModal').style.display = 'block'; }
+    function closeSignup() { document.getElementById('signupModal').style.display = 'none'; }
+    function openSignupFromLogin(){ closeLogin(); openSignup(); }
+    function openLoginFromSignup(){ closeSignup(); openLogin(); }
+    const translations = {
+      en: { title: "Welcome to TrendBazaar", subtitle: "Fashion, Electronics & More – All in One Place" },
+      te: { title: "ట్రెండ్‌బజార్‌కి స్వాగతం", subtitle: "ఫ్యాషన్, ఎలక్ట్రానిక్స్ & మరిన్ని – అన్నీ ఒకే చోట" },
+      hi: { title: "ट्रेंडबाज़ार में आपका स्वागत है", subtitle: "फ़ैशन, इलेक्ट्रॉनिक्स और अधिक – सब एक ही जगह" },
+      ta: { title: "டிரெண்ட்பஜாருக்கு வரவேற்கிறோம்", subtitle: "ஃபேஷன், எலக்ட்ரானிக்ஸ் & மேலும் – அனைத்தும் ஒரே இடத்தில்" },
+      kn: { title: "ಟ್ರೆಂಡ್‌ಬಜಾರ್‌ಗೆ ಸುಸ್ವಾಗತ", subtitle: "ಫ್ಯಾಶನ್, ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಇನ್ನಷ್ಟು – ಒನೇ ಜಾಗದಲ್ಲಿ" },
+      ml: { title: "ട്രെൻഡ്‌ബസാറിലേക്ക് സ്വാഗതം", subtitle: "ഫാഷൻ, ഇലക്ട്രോണിക്സ് & കൂടുതൽ – എല്ലാം ഒരേ സ്ഥാനത്ത്" }
+    };
+    function changeLanguage() {
+      const lang = document.getElementById("languageSelect").value;
+      document.getElementById("title").textContent = translations[lang].title;
+      document.getElementById("subtitle").textContent = translations[lang].subtitle;
+      closeLanguages();
+    }
+    function saveProfile(e) { e.preventDefault(); alert("Profile updated successfully ✅"); closeProfile(); }
+    let cards = [];
+    function addCard(){
+      const number=document.getElementById("cardNumber").value;
+      const name=document.getElementById("cardName").value;
+      const expiry=document.getElementById("expiry").value;
+      if(number && name && expiry){
+        cards.push({number,name,expiry});
+        displayCards();
+        document.getElementById("cardNumber").value="";
+        document.getElementById("cardName").value="";
+        document.getElementById("expiry").value="";
+      }
+    }
+    function displayCards(){
+      const list=document.getElementById("card-list");
+      list.innerHTML="";
+      cards.forEach((c,i)=>{
+        list.innerHTML += `<div class="card-item"><span>💳 ${c.number} - ${c.name} (${c.expiry})</span><button class="btn delete-btn" onclick="deleteCard(${i})">Delete</button></div>`;
+      });
+    }
+    function deleteCard(i){ cards.splice(i,1); displayCards(); }
+    let addresses=[];
+    function addAddress(){
+      const type=document.getElementById("addressType").value;
+      const addr=document.getElementById("fullAddress").value;
+      const landmark=document.getElementById("landmark").value;
+      const phone=document.getElementById("addressPhone").value;
+      if(type && addr && phone){
+        addresses.push({type,addr,landmark,phone});
+        displayAddresses();
+        document.getElementById("addressType").value="";
+        document.getElementById("fullAddress").value="";
+        document.getElementById("landmark").value="";
+        document.getElementById("addressPhone").value="";
+      }
+    }
+    function displayAddresses(){
+      const list=document.getElementById("address-list");
+      list.innerHTML="";
+      addresses.forEach((a,i)=>{
+        list.innerHTML += `<div class="card-item"><span>📍 ${a.type}: ${a.addr} (${a.phone})</span><button class="btn delete-btn" onclick="deleteAddress(${i})">Delete</button></div>`;
+      });
+    }
+    function deleteAddress(i){ addresses.splice(i,1); displayAddresses(); }
+    let notifications=[];
+    function addNotification(){
+      const msg=document.getElementById("notifText").value;
+      if(msg){
+        notifications.push(msg);
+        displayNotifications();
+        document.getElementById("notifText").value="";
+      }
+    }
+    function displayNotifications(){
+      const list=document.getElementById("notification-list");
+      list.innerHTML="";
+      notifications.forEach((n,i)=>{
+        list.innerHTML += `<div class="card-item"><span>🔔 ${n}</span><button class="btn delete-btn" onclick="deleteNotification(${i})">Delete</button></div>`;
+      });
+    }
+    function deleteNotification(i){ notifications.splice(i,1); displayNotifications(); }
+    function downloadData(){ alert("📂 Your account data is being prepared for download..."); }
+    function deleteAccount(){ if(confirm("⚠ Are you sure you want to delete your account permanently?")){ alert("Your account has been deleted ❌"); window.location.href="index.html"; } }
+    async function signup() {
+      const name = document.getElementById('signupName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const pass = document.getElementById('signupPass').value;
+      if (!name || !email || pass.length < 6) {
+        alert('Please enter name, valid email and password (min 6 chars).');
+        return;
+      }
+      try {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
+        const user = userCredential.user;
+        await db.collection('users').doc(user.uid).set({
+          name,
+          email,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        alert('Account created ✅. Logged in as ' + user.email);
+        closeSignup();
+      } catch (err) {
+        alert('Signup error: ' + err.message);
+      }
+    }
+    async function login() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPass').value;
+      if (!email || !pass) { alert('Enter email and password'); return; }
+      try {
+        const userCredential = await auth.signInWithEmailAndPassword(email, pass);
+        const user = userCredential.user;
+        alert('Welcome back, ' + user.email);
+        closeLogin();
+      } catch (err) {
+        alert('Login error: ' + err.message);
+      }
+    }
+    function logout() {
+      auth.signOut().then(() => {
+        alert('Logged out');
+      }).catch(err => alert('Logout error: ' + err.message));
+    }
+    async function openForgotPassword() {
+      const email = document.getElementById('loginEmail').value.trim();
+      if (!email) {
+        alert("⚠️ Please enter your registered email in the login form first.");
+        return;
+      }
+      try {
+        await auth.sendPasswordResetEmail(email);
+        alert("📩 Password reset link sent to " + email);
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    }
+    auth.onAuthStateChanged(async (user) => {
+      const userStatus = document.getElementById('userStatus');
+      const loginLink = document.getElementById('loginLink');
+      const logoutLink = document.getElementById('logoutLink');
+      if (user) {
+        userStatus.textContent = user.email;
+        loginLink.style.display = 'none';
+        logoutLink.style.display = 'block';
+        try {
+          const docSnap = await db.collection('users').doc(user.uid).get();
+          if (docSnap.exists) {}
+        } catch (e) { }
+      } else {
+        userStatus.textContent = '';
+        loginLink.style.display = 'block';
+        logoutLink.style.display = 'none';
+      }
+    });
+    function requireLoginAction(actionName) {
+      const user = auth.currentUser;
+      if (!user) {
+        if (confirm('You need to be logged in to ' + actionName + '. Do you want to login now?')) {
+          openLogin();
+        }
+        return false;
+      }
+      return true;
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const heroBtn = document.querySelector('.hero a button');
+      heroBtn.addEventListener('click', (e) => {
+        if (!requireLoginAction('start shopping')) e.preventDefault();
+      });
+    });
+    window.onclick = function(event) {
+      const modals = document.querySelectorAll('.modal');
+      modals.forEach(m => {
+        if (event.target == m) m.style.display = "none";
+      });
+    };
+  </script>
+</body>
+</html>

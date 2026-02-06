@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TrendBazaar – Multi User Shop</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+  /* === Base reset === */
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      font-family: Inter, system-ui, "Segoe UI", Arial;
+      min-height:100vh;
+      background:linear-gradient(130deg,#f8fafc 0%,#e5f6ff 100%);
+      color:#222;
+      display:flex;
+      flex-direction:column;
+    }
+    /* === Header === */
+    header {
+      background:linear-gradient(90deg,#0f172a 0%,#0ea5e9 100%);
+      color:#fff;
+      padding:18px 14px 0 14px;
+      box-shadow:0 8px 24px rgba(2,6,23,0.20);
+      position:sticky;
+      top:0;
+      z-index:101;
+    }
+    .header-inner{
+      max-width:1300px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .brand{display:flex;align-items:center;gap:10px;}
+    .brand h1{font-size:21px;}
+    nav{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    nav a{color:rgba(255,255,255,0.92);margin:0 8px;font-weight:600;text-decoration:none;transition:all .2s}
+    nav a:hover{transform:translateY(-2px);color:#fff}
+    #userEmailDisplay{color:#ffd86b;font-weight:700}
+    /* === Search bar below header, smaller === */
+    .search-row-holder{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      background:transparent;
+      box-shadow:0 2px 10px rgba(14,165,233,0.045);
+    }
+    .search-wrap{
+      width:370px;
+      max-width:96vw;
+      margin-top:6px;
+      margin-bottom:0;
+      background:linear-gradient(90deg,#e0f2fe 0%, #bae6fd 100%);
+      border-radius:12px;
+      box-shadow:0 2px 9px rgba(14,165,233,0.07);
+      display:flex;
+      align-items:center;
+      gap:6px;
+      padding:5px 8px;
+      border:1px solid #38bdf8;
+      position:relative;
+    }
+    .search-wrap .icon {
+      font-size:15px;
+      color:#0ea5e9;
+      margin-left:6px;
+      margin-right:2px;
+    }
+    .search-wrap input[type="search"]{
+      border:0;
+      font-size:15px;
+      flex:1;
+      background:#e3f4fd;
+      color:#222;
+      padding:7px 10px;
+      border-radius:7px;
+      outline:none;
+      transition:box-shadow .2s;
+    }
+    .search-wrap input[type="search"]:focus{
+      box-shadow:0 0 0 2px #38bdf8;
+      background:#fff;
+    }
+    .search-wrap button{
+      background:#0ea5e9;
+      color:#fff;
+      border:none;
+      padding:6px 12px;
+      border-radius:7px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 2px 8px rgba(14,165,233,0.13);
+      font-size:15px;
+      transition:background .19s;
+    }
+    .search-wrap button:hover{background:#2563eb;}
+    /* Autofill-trap (hidden) */
+    .search-wrap input[type="text"].autofill-trap,
+    .search-wrap input[type="password"].autofill-trap{
+      position:absolute;
+      left:-9999px;
+      width:1px;height:1px;opacity:0;pointer-events:none;
+    }
+    /* === Products grid style === */
+    .products{
+      display:grid;
+      grid-template-columns:repeat(5,minmax(180px,1fr));
+      gap:22px;
+      max-width:1300px;
+      width:100%;
+      margin:26px auto 0 auto;
+      padding:0 12px 38px;
+    }
+    .product{
+      background:linear-gradient(180deg,#e0f7fa,#f8fafc 70%);
+      border-radius:14px;
+      box-shadow:0 8px 24px rgba(2,6,23,0.06);
+      overflow:hidden;
+      position:relative;
+      padding:13px;
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+      transition:transform .20s,box-shadow .20s;
+    }
+    .product:hover{
+      transform:translateY(-10px) scale(1.025);
+      box-shadow:0 14px 36px rgba(2,6,23,0.16);
+    }
+    .product img{
+      width:100%;
+      height:155px;
+      object-fit:cover;
+      border-radius:10px;
+      display:block;
+      background:#fff;
+      border:1px solid #bae6fd;
+    }
+    .product h3{font-size:15px;margin-top:3px;}
+    .price-row{display:flex;align-items:center;justify-content:space-between;gap:6px}
+    .price-row .price{font-weight:800;color:#0f172a}
+    .product .actions{display:flex;gap:7px;margin-top:8px}
+    .product button{flex:1;padding:8px;border-radius:8px;border:0;cursor:pointer;font-weight:700;font-size:14px}
+    .add-btn {
+      background:linear-gradient(90deg,#2563eb,#06b6d4);
+      color:white;
+      border:none;
+    }
+    .buy-btn {
+      background:transparent;
+      border:1px solid #e6eef6;
+      color:#0f172a;
+    }
+    .badge{
+      position:absolute;top:10px;left:10px;
+      background:#10b981;color:#fff;padding:5px 9px;border-radius:999px;
+      font-size:11px;font-weight:700;box-shadow:0 2px 8px rgba(16,185,129,0.10)
+    }
+    /* Cart count */
+    .cart-count{
+      position:relative;top:-6px;left:4px;
+      background:#ef4444;color:white;
+      font-size:13px;border-radius:50%;padding:2px 8px;display:inline-block
+    }
+    /* Modal base */
+    .modal{display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(2,6,23,0.6);z-index:5000;overflow-y:auto}
+    .modal-content{
+      background:#fff;margin:5% auto;padding:18px 14px;width:390px;max-width:97vw;
+      border-radius:10px;box-shadow:0 8px 30px rgba(2,6,23,0.19);
+      max-height:85vh;overflow-y:auto;
+    }
+    .close{float:right;font-size:20px;cursor:pointer;color:#334155}
+    .footer{background:#0b1220;color:#b8c6ce;text-align:center;padding:18px;margin-top:auto;font-size:14px}
+    /* Orders / admin specifics */
+    .order{border-bottom:1px solid #e3e8ee;padding:12px 0}
+    .order-id{color:#1d4ed8;font-weight:800;margin-bottom:6px}
+    .btn-cancel{
+      background:#ef4444!important;color:#fff;padding:6px 9px;border:none;
+      border-radius:8px;margin-top:8px;cursor:pointer;font-size:13px;
+    }
+    .btn-ship{
+      background:#10b981!important;color:#fff;padding:6px 9px;border:none;
+      border-radius:8px;margin-top:8px;cursor:pointer;font-size:13px;
+    }
+    /* Responsive tweaks */
+    @media (max-width:1050px){
+      .products{grid-template-columns:repeat(3,minmax(180px,1fr));}
+    }
+    @media (max-width:700px){
+      .products{grid-template-columns:repeat(2,minmax(170px,1fr));}
+      .modal-content{width:98vw;}
+      .product img{height:115px;}
+      .search-wrap{width:94vw;}
+    }
+    @media (max-width:530px){
+      .products{grid-template-columns:repeat(1,minmax(140px,1fr));}
+      .search-wrap{font-size:13px;}
+    }
+
+
+
+  </style>
+</head>
+<body>
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div style="font-size:22px;">🛍️</div>
+      <h1>TrendBazaar</h1>
+    </div>
+    <nav aria-label="Main navigation">
+      <a href="index.html"><i class="fa fa-home"></i> Home</a>
+      <a href="product.html"><i class="fa fa-box"></i> Products</a>
+      <a href="blog.html"><i class="fa fa-blog"></i> Blog</a>
+      <a href="#" id="cartNav">Cart <span id="cartCount" class="cart-count">0</span></a>
+      <a href="#" onclick="showOrdersModal()">Orders</a>
+      <span id="adminLink" style="display:none;">
+        <a href="#" onclick="showAdminPanel()">Admin</a>
+      </span>
+      <span id="authSection">
+        <a href="#" onclick="showUserLogin()" id="loginBtn">Login</a>
+      </span>
+    </nav>
+  </div>
+</header>
+<!-- Search bar narrow, below header -->
+<div class="search-row-holder">
+  <form class="search-wrap" role="search" aria-label="Search products" onsubmit="return false;">
+    <input type="text" class="autofill-trap" autocomplete="username"/>
+    <input type="password" class="autofill-trap" autocomplete="current-password"/>
+    <i class="fa fa-search icon" aria-hidden="true"></i>
+    <input
+      type="search"
+      id="searchInput"
+      name="searchfield"
+      placeholder="Search products, categories or brands..."
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+      inputmode="search"
+      aria-autocomplete="list"
+      aria-label="Search products"
+      style="margin-right:6px;"
+    />
+    <button id="clearSearch" title="Clear search" type="button"><i class="fa fa-xmark"></i></button>
+  </form>
+</div>
+<!-- Shop: unlimited products -->
+<section id="shopPage" class="products">
+  <div class="product" data-name="WOMen’s T-Shirt">
+    <div class="badge">Bestseller</div>
+    <img src="https://trendia.co/cdn/shop/files/MND0189_1_4f7c3e88-0743-499d-84fe-d9d940c914bc.jpg?v=1753435332" alt="WOMen's T-Shirt"/>
+    <h3>WOMen’s T-Shirt</h3>
+    <div class="price-row">
+      <div class="price">₹359</div>
+      <div style="color:#64748b;font-size:13px">In stock</div>
+    </div>
+    <div class="actions">
+      <button class="add-btn" onclick="addToCart('Men’s T-Shirt',359)"><i class="fa fa-cart-plus"></i> Add</button>
+      <button class="buy-btn" onclick="buyProduct('Men’s T-Shirt',359)"><i class="fa fa-bolt"></i> Buy</button>
+    </div>
+  </div>
+  <div class="product" data-name="Women’s Dress">
+    <img src="https://media.istockphoto.com/id/1324844508/photo/gorgeous-woman-wearing-beautiful-maxi-dress-posing-against-wall-with-a-wild-grape.jpg?s=612x612&w=0&k=20&c=BJrcuLt0m5Hm6zOhgO-E0TGqIxzWKdecgw1xcOu1aN4=" alt="Women's Dress"/>
+    <h3>Women’s Dress</h3>
+    <div class="price-row">
+      <div class="price">₹450</div>
+      <div style="color:#64748b;font-size:13px">best seller</div>
+    </div>
+    <div class="actions">
+      <button class="add-btn" onclick="addToCart('Women’s Dress',450)"><i class="fa fa-cart-plus"></i> Add</button>
+      <button class="buy-btn" onclick="buyProduct('Women’s Dress',450)"><i class="fa fa-bolt"></i> Buy</button>
+    </div>
+    </div>
+  <div class="product" data-name="Women’s Dress">
+    <img src="https://media.istockphoto.com/id/887360960/photo/mens-suits-on-hangers-in-different-colors.jpg?s=612x612&w=0&k=20&c=RR19yJjRuR-CBWj9u1sQkFgtdYJ07KEkM678R0mtuZY=" alt="men's Dress"/>
+    <h3>shoots</h3>
+    <div class="price-row">
+      <div class="price">₹5500</div>
+      <div style="color:#64748b;font-size:13px">Low stock</div>
+      <div style="color:#64748b;font-size:13px">available in 6 of pack </div>
+    </div>
+    <div class="actions">
+      <button class="add-btn" onclick="addToCart('men’s Dress',5500)"><i class="fa fa-cart-plus"></i> Add</button>
+      <button class="buy-btn" onclick="buyProduct('men’s Dress',5500)"><i class="fa fa-bolt"></i> Buy</button>
+    </div>
+</div>
+  <div class="product" data-name="men’s Dress">
+    <img src="https://cdn.pixabay.com/photo/2016/03/27/19/31/fashion-1283863_1280.jpg" alt="men's Dress"/>
+    <h3>hoodie</h3>
+    <div class="price-row">
+      <div class="price">₹899</div>
+      <div style="color:#64748b;font-size:13px">best seller </div>
+    </div>
+    <div class="actions">
+      <button class="add-btn" onclick="addToCart('men’s Dress',899)"><i class="fa fa-cart-plus"></i> Add</button>
+      <button class="buy-btn" onclick="buyProduct('men’s Dress',899)"><i class="fa fa-bolt"></i> Buy</button>
+    </div>
+    </div>
+  <div class="product" data-name="men’s Dress">
+    <img src="https://i.pinimg.com/236x/a0/82/32/a082326e5d81137ab61e9e514ba41e50.jpg" alt="men's Dress"/>
+    <h3>pants</h3>
+    <div class="price-row">
+      <div class="price">₹499</div>
+      <div style="color:#64748b;font-size:13px">best seller </div>
+    </div>
+    <div class="actions">
+      <button class="add-btn" onclick="addToCart('men’s Dress',499)"><i class="fa fa-cart-plus"></i> Add</button>
+      <button class="buy-btn" onclick="buyProduct('men’s Dress',499)"><i class="fa fa-bolt"></i> Buy</button>
+    </div>
+    </div>
+  <div class="product" data-name="men’s Dress">
+    <div class="badge">Bestseller</div>
+    <img src="https://images.unsplash.com/photo-1617113930975-f9c7243ae527?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8bWVucyUyMGZhc2hpb258ZW58MHx8MHx8fDA%3D&fm=jpg&q=60&w=3000" alt="men's Dress"/>
+    <h3>casual shoots</h3>
+    <div class="price-row">
+      <div class="price">₹499</div>
+      <div style="color:#64748b;font-size:13px">in stock</div>
+      <div style="color:#64748b;font-size:13px">limted offer</div>
+    </div>
+    <div class="actions">
+      <button class="add-btn" onclick="addToCart('men’s Dress',499)"><i class="fa fa-cart-plus"></i> Add</button>
+      <button class="buy-btn" onclick="buyProduct('men’s Dress',499)"><i class="fa fa-bolt"></i> Buy</button>
+    </div>
+    </div>
+    <div class="product" data-name="men’s Dress">
+    <div class="badge">Bestseller</div>
+    <img src="https://imagescdn.vanheusenindia.com/img/app/product/3/39946813-19334314.jpg?auto=format&w=390" alt="men's Dress"/>
+    <h3>formal shirt's</h3>
+    <div class="price-row">
+      <div class="price">₹299</div>
+      <div style="color:#64748b;font-size:13px">in stock</div>
+      <div style="color:#64748b;font-size:13px"> extend offer</div>
+    </div>
+    <div class="actions">
+      <button class="add-btn" onclick="addToCart('men’s Dress',299)"><i class="fa fa-cart-plus"></i> Add</button>
+      <button class="buy-btn" onclick="buyProduct('men’s Dress',299)"><i class="fa fa-bolt"></i> Buy</button>
+    </div>
+    </div>
+    <div class="product" data-name="men’s Dress">
+    <div class="badge">Bestseller</div>
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7scCgBKxmHaA4YJGsYsi4Mjo1EGfiF5axbw&s" alt="men's Dress"/>
+    <h3>formal shirt's</h3>
+    <div class="price-row">
+      <div class="price">₹299</div>
+      <div style="color:#64748b;font-size:13px">in stock</div>
+      <div style="color:#64748b;font-size:13px"> extend offer</div>
+    </div>
+    <div class="actions">
+      <button class="add-btn" onclick="addToCart('men’s Dress',299)"><i class="fa fa-cart-plus"></i> Add</button>
+      <button class="buy-btn" onclick="buyProduct('men’s Dress',299)"><i class="fa fa-bolt"></i> Buy</button>
+    </div>
+    </div>
+    <div class="product" data-name="men’s Dress">
+    <div class="badge">Bestseller</div>
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYTQyxoGRHpuFFBeWMdugWgDRrWP411n1jig&s" alt="men's Dress"/>
+    <h3>formal shirt's</h3>
+    <div class="price-row">
+      <div class="price">₹299</div>
+      <div style="color:#64748b;font-size:13px">in stock</div>
+      <div style="color:#64748b;font-size:13px"> extend offer</div>
+    </div>
+    <div class="actions">
+      <button class="add-btn" onclick="addToCart('men’s Dress',299)"><i class="fa fa-cart-plus"></i> Add</button>
+      <button class="buy-btn" onclick="buyProduct('men’s Dress',299)"><i class="fa fa-bolt"></i> Buy</button>
+    </div>
+    </div>
+    <div class="product" data-name="men’s Dress">
+    <div class="badge">Bestseller</div>
+    <img src="https://campussutra.com/cdn/shop/files/CSMOVSRT7608_1_3d3e2fc2-6275-465f-871f-1949ca735dd9.jpg?v=1730801129" alt="men's Dress"/>
+    <h3>formal shirt's</h3>
+    <div class="price-row">
+      <div class="price">₹299</div>
+      <div style="color:#64748b;font-size:13px">in stock</div>
+      <div style="color:#64748b;font-size:13px"> extend offer</div>
+    </div>
+    <div class="actions">
+      <button class="add-btn" onclick="addToCart('men’s Dress',299)"><i class="fa fa-cart-plus"></i> Add</button>
+      <button class="buy-btn" onclick="buyProduct('men’s Dress',299)"><i class="fa fa-bolt"></i> Buy</button>
+    </div>
+    </div>
+    <div class="product" data-name="men’s Dress">
+    <div class="badge">Bestseller</div>
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxmyocF2BqmhRAVKiVOfLUALp0xWdMmXkXw3v6QD76GJzKvZDB9NkQI8LhSfJmBJVbgVA&usqp=CAU" alt="men's Dress"/>
+    <h3>formal shirt's</h3>
+    <div class="price-row">
+      <div class="price">₹299</div>
+      <div style="color:#64748b;font-size:13px">in stock</div>
+      <div style="color:#64748b;font-size:13px"> extend offer</div>
+    </div>
+    <div class="actions">
+      <button class="add-btn" onclick="addToCart('men’s Dress',299)"><i class="fa fa-cart-plus"></i> Add</button>
+      <button class="buy-btn" onclick="buyProduct('men’s Dress',299)"><i class="fa fa-bolt"></i> Buy</button>
+    </div>
+    </div>
+    <div class="product" data-name="men’s Dress">
+    <div class="badge">Bestseller</div>
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2k4Qi0ReKOIp-9lcEHgggPAU5Q1BHvyN1xemseXDTt1SQ0lGbaNiIu4L1nqThcZOSOVg&usqp=CAU" alt="men's Dress"/>
+    <h3>formal shirt's</h3>
+    <div class="price-row">
+      <div class="price">₹315</div>
+      <div style="color:#64748b;font-size:13px">in stock</div>
+      <div style="color:#64748b;font-size:13px"> extend offer</div>
+    </div>
+    <div class="actions">
+      <button class="add-btn" onclick="addToCart('men’s Dress',315)"><i class="fa fa-cart-plus"></i> Add</button>
+      <button class="buy-btn" onclick="buyProduct('men’s Dress',315)"><i class="fa fa-bolt"></i> Buy</button>
+    </div>
+    </div>
+    <div class="product" data-name="men’s Dress">
+    <div class="badge">Bestseller</div>
+    <img src="https://campussutra.com/cdn/shop/files/CSMSSRT7078_7_06ff7bb4-26fd-40e7-ac89-1a5f17152e3f.jpg?v=1723185655&width=1024" alt="men's Dress"/>
+    <h3>formal shirt's</h3>
+    <div class="price-row">
+      <div class="price">₹199</div>
+      <div style="color:#64748b;font-size:13px">in stock</div>
+      <div style="color:#64748b;font-size:13px"> extend offer</div>
+    </div>
+    <div class="actions">
+      <button class="add-btn" onclick="addToCart('men’s Dress',199)"><i class="fa fa-cart-plus"></i> Add</button>
+      <button class="buy-btn" onclick="buyProduct('men’s Dress',199)"><i class="fa fa-bolt"></i> Buy</button>
+    </div>
+  </div>
+  <!-- Add unlimited products as more <div class="product" ...></div> here -->
+</section>
+<!-- Cart Modal -->
+<div id="cartModal" class="modal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true">
+    <span class="close" onclick="closeCartModal()">&times;</span>
+    <h2>Your Cart</h2>
+    <div id="cartItems" style="margin-top:8px"></div>
+    <div style="margin-top:12px">
+      <button onclick="checkoutCart()" style="padding:10px 14px;border-radius:8px;background:#0ea5e9;border:0;color:#fff;font-weight:800">Checkout</button>
+    </div>
+  </div>
+</div>
+<!-- Orders Modal -->
+<div id="ordersModal" class="modal" aria-hidden="true">
+  <div class="modal-content">
+    <span class="close" onclick="closeOrdersModal()">&times;</span>
+    <h2>Your Orders</h2>
+    <div id="ordersList" style="margin-top:8px"></div>
+  </div>
+</div>
+<!-- Payment Modal -->
+<div id="paymentModal" class="modal" aria-hidden="true">
+  <div class="modal-content">
+    <span class="close" onclick="closePaymentModal()">&times;</span>
+    <h2>Payment</h2>
+    <select id="paymentType" style="width:100%;padding:10px;border-radius:8px;margin-top:6px">
+      <option value="phonepe">PhonePe</option>
+      <option value="paytm">Paytm</option>
+      <option value="cod">Cash on Delivery</option>
+    </select>
+    <input type="text" id="userAddress" placeholder="Enter Address" style="width:100%;padding:10px;margin:10px 0;border-radius:8px;border:1px solid #e6eef6"/>
+    <button onclick="confirmPayment()" style="width:100%;padding:10px;border-radius:8px;background:#10b981;border:0;color:#fff;font-weight:800">Pay</button>
+  </div>
+</div>
+<!-- User Login Modal -->
+<div id="userLogin" class="modal" aria-hidden="true">
+  <div class="modal-content">
+    <span class="close" onclick="closeUserLogin()">&times;</span>
+    <h2>User Login / Signup</h2>
+    <input type="email" id="authEmail" autocomplete="off" placeholder="Enter your Email" style="width:100%;padding:10px;margin:10px 0;border-radius:8px;border:1px solid #e6eef6"/>
+    <input type="password" id="authPass" autocomplete="off" placeholder="Enter Password" style="width:100%;padding:10px;margin:10px 0;border-radius:8px;border:1px solid #e6eef6"/>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button onclick="loginUser()" style="flex:1;padding:10px;border-radius:8px;background:#2563eb;border:0;color:#fff;font-weight:700">Login</button>
+      <button onclick="signupUser()" style="flex:1;padding:10px;border-radius:8px;background:#06b6d4;border:0;color:#fff;font-weight:700">Signup</button>
+    </div>
+  </div>
+</div>
+<!-- Admin Panel Modal -->
+<div id="adminPanel" class="modal" aria-hidden="true">
+  <div class="modal-content">
+    <span class="close" onclick="closeAdminPanel()">&times;</span>
+    <h2>Admin – Orders</h2>
+    <div id="adminOrdersList" style="margin-top:8px"></div>
+  </div>
+</div>
+<!-- Footer -->
+<div class="footer">©  @2025 TrendBazaar | All Rights Reserved devloped by bapuji </div>
+<!-- Firebase + App -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_OWHIrjBOkunmFMyUGgvXjOstZj8BhNQ",
+    authDomain: "trendbazaar-e8332.firebaseapp.com",
+    projectId: "trendbazaar-e8332",
+    storageBucket: "trendbazaar-e8332.appspot.com",
+    messagingSenderId: "1234567890",
+    appId: "1:926227745803:web:f08e4395e627a2568b0b0e"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  let currentUser=null;
+  const ADMIN_EMAIL="satishmallena427@gmail.com";
+  // Helpers
+  function getCart(){return JSON.parse(localStorage.getItem("cart_"+currentUser)||"[]");}
+  function saveCart(cart){localStorage.setItem("cart_"+currentUser,JSON.stringify(cart));}
+  function getOrders(email=currentUser){return JSON.parse(localStorage.getItem("orders_"+email)||"[]");}
+  function saveOrders(orders,email=currentUser){localStorage.setItem("orders_"+email,JSON.stringify(orders));}
+  function updateCartCount(){if(!currentUser){document.getElementById("cartCount").innerText=0;return;}let cart=getCart();document.getElementById("cartCount").innerText=cart.reduce((s,p)=>s+p.qty,0);}
+  function makeOrderId(len=6){const c="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";let id="";for(let i=0;i<len;i++)id+=c[Math.floor(Math.random()*c.length)];return "ORD-"+id;}
+  // Search functionality, updated look/feel
+  const searchInput = document.getElementById("searchInput");
+  const clearBtn = document.getElementById("clearSearch");
+  clearBtn.addEventListener('click', () => { searchInput.value=''; searchInput.focus(); fireFilter(''); });
+  function fireFilter(q){
+    q = (q||'').toLowerCase().trim();
+    document.querySelectorAll(".product").forEach(p=>{
+      let name = (p.dataset.name||'').toLowerCase();
+      p.style.display = name.includes(q) ? "block" : "none";
+    });
+  }
+  searchInput.addEventListener("input", function(){
+    fireFilter(this.value);
+  });
+  searchInput.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape") { searchInput.value=''; fireFilter(''); }
+  });
+  // Cart + Orders
+  window.addToCart=function(name,price){
+    if(!currentUser)return alert("Login first!");
+    let cart=getCart();
+    let item=cart.find(p=>p.name===name);
+    if(item)item.qty++;else cart.push({name,price,qty:1});
+    saveCart(cart);updateCartCount();alert("✅ "+name+" added!");
+  }
+  window.removeCartItem=function(name){let cart=getCart().filter(c=>c.name!==name);saveCart(cart);updateCartCount();showCartModal();}
+  window.showCartModal=function(){if(!currentUser)return alert("Login first!");document.getElementById("cartModal").style.display="block";let cart=getCart();let html=cart.length?cart.map(i=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0"><div>${i.name} x${i.qty} <br><small style="color:#64748b">₹${i.price} each</small></div><div>₹${i.price*i.qty} <br><button style="margin-top:6px" onclick="removeCartItem('${i.name}')">Remove</button></div></div>`).join(""):"<p>Cart empty.</p>";document.getElementById("cartItems").innerHTML=html;}
+  window.closeCartModal=function(){document.getElementById("cartModal").style.display="none";}
+  document.getElementById("cartNav").onclick=(e)=>{e.preventDefault();showCartModal();}
+  window.buyProduct=function(name,price){if(!currentUser)return alert("Login first!");saveCart([{name,price,qty:1}]);updateCartCount();showPaymentModal();}
+  window.checkoutCart=function(){let cart=getCart();if(!cart.length)return alert("Empty cart");closeCartModal();showPaymentModal();}
+  window.showPaymentModal=function(){document.getElementById("paymentModal").style.display="block";}
+  window.closePaymentModal=function(){document.getElementById("paymentModal").style.display="none";}
+  window.confirmPayment=function(){let cart=getCart();if(!cart.length)return;let addr=document.getElementById("userAddress").value.trim();if(!addr)return alert("Enter address");let pay=document.getElementById("paymentType").value;let orderId=makeOrderId();let total=cart.reduce((s,p)=>s+p.price*p.qty,0);let order={orderId,products:cart.map(p=>p.name+" x"+p.qty).join(", "),totalAmt:total,address:addr,payType:pay,time:new Date().toLocaleString(),shipped:false,cancelledBy:null,email:currentUser};let orders=getOrders();orders.unshift(order);saveOrders(orders);saveCart([]);updateCartCount();closePaymentModal();alert("✅ Order Placed! ID: "+orderId);showOrdersModal();}
+  // Orders
+  window.showOrdersModal=function(){if(!currentUser)return alert("Login first!");document.getElementById("ordersModal").style.display="block";let orders=getOrders();let html=orders.length?orders.map(o=>`<div class="order"><div class="order-id">${o.orderId}</div>Products: ${o.products}<br>Amount: ₹${o.totalAmt}<br>Addr: ${o.address}<br>Pay: ${o.payType}<br><em>${o.time}</em><br>Status: ${o.cancelledBy==="user"?"❌ Cancelled by You":o.cancelledBy==="admin"?"❌ Cancelled by Admin":o.shipped?"✅ Shipped":"⌛ Processing"}`+(o.cancelledBy?`<br><button class="btn-cancel" onclick="removeOrder('${o.orderId}')">Remove</button>`:`<br><button class="btn-cancel" onclick="cancelMyOrder('${o.orderId}')">Cancel</button>`)+`</div>`).join(""):"<p>No orders.</p>";document.getElementById("ordersList").innerHTML=html;}
+  window.closeOrdersModal=function(){document.getElementById("ordersModal").style.display="none";}
+  window.cancelMyOrder=function(orderId){let orders=getOrders();let idx=orders.findIndex(o=>o.orderId===orderId);if(idx>-1){orders[idx].cancelledBy="user";orders[idx].shipped=false;saveOrders(orders);showOrdersModal();}}
+  window.removeOrder=function(orderId){let orders=getOrders().filter(o=>o.orderId!==orderId);saveOrders(orders);showOrdersModal();}
+  // Auth
+  window.showUserLogin=function(){document.getElementById("userLogin").style.display="block";}
+  window.closeUserLogin=function(){document.getElementById("userLogin").style.display="none";}
+  window.loginUser=function(){const email=document.getElementById("authEmail").value.trim();const pass=document.getElementById("authPass").value.trim();signInWithEmailAndPassword(auth,email,pass).then(()=>closeUserLogin()).catch(e=>alert(e.message));}
+  window.signupUser=function(){const email=document.getElementById("authEmail").value.trim();const pass=document.getElementById("authPass").value.trim();createUserWithEmailAndPassword(auth,email,pass).then(()=>closeUserLogin()).catch(e=>alert(e.message));}
+  onAuthStateChanged(auth,user=>{if(user){currentUser=user.email;localStorage.setItem("currentUser",currentUser);document.getElementById("authSection").innerHTML=`<span id="userEmailDisplay">${user.email}</span> | <a href="#" onclick="logoutUser()">Logout</a>`;updateCartCount();document.getElementById("adminLink").style.display=user.email===ADMIN_EMAIL?"inline":"none";}else{currentUser=null;document.getElementById("authSection").innerHTML=`<a href="#" onclick="showUserLogin()" id="loginBtn">Login</a>`;document.getElementById("adminLink").style.display="none";updateCartCount();}});
+  window.logoutUser=function(){signOut(auth);}
+  // Admin Panel
+  window.showAdminPanel=function(){if(currentUser!==ADMIN_EMAIL)return alert("Not authorized");document.getElementById("adminPanel").style.display="block";let html="";for(let i=0;i<localStorage.length;i++){let key=localStorage.key(i);if(key.startsWith("orders_")){let email=key.replace("orders_","");let orders=JSON.parse(localStorage.getItem(key));orders.forEach(o=>{html+=`<div class="order"><div class="order-id">${o.orderId}</div>User: ${email}<br>Products: ${o.products}<br>Amount: ₹${o.totalAmt}<br>Addr: ${o.address}<br>Pay: ${o.payType}<br><em>${o.time}</em><br>Status: ${o.cancelledBy==="user"?"❌ Cancelled by User":o.cancelledBy==="admin"?"❌ Cancelled by Admin":o.shipped?"✅ Shipped":"⌛ Processing"}<br>`+(o.cancelledBy?`<button class="btn-cancel" onclick="adminRemoveOrder('${o.orderId}','${email}')">Remove</button>`:`<button class="btn-ship" onclick="shipOrder('${o.orderId}','${email}')">Ship</button><button class="btn-cancel" onclick="cancelOrder('${o.orderId}','${email}')">Cancel</button>`)+`</div>`;});}}if(!html)html="<p>No orders yet.</p>";document.getElementById("adminOrdersList").innerHTML=html;}
+  window.closeAdminPanel=function(){document.getElementById("adminPanel").style.display="none";}
+  window.cancelOrder=function(orderId,email){let orders=getOrders(email);let idx=orders.findIndex(o=>o.orderId===orderId);if(idx>-1){orders[idx].cancelledBy="admin";orders[idx].shipped=false;saveOrders(orders,email);showAdminPanel();}}
+  window.shipOrder=function(orderId,email){let orders=getOrders(email);let idx=orders.findIndex(o=>o.orderId===orderId);if(idx>-1){orders[idx].shipped=true;saveOrders(orders,email);showAdminPanel();}}
+  window.adminRemoveOrder=function(orderId,email){let orders=getOrders(email).filter(o=>o.orderId!==orderId);saveOrders(orders,email);showAdminPanel();}
+</script>
+</body>
+</html>

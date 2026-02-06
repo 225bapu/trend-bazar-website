@@ -1,0 +1,234 @@
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  background: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* ===== Header ===== */
+header {
+  background: #111;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+}
+
+header .logo {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+header nav a {
+  color: white;
+  margin: 0 12px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+header nav a:hover {
+  color: #ff9800;
+}
+
+header .cart {
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+/* ===== Hero ===== */
+.hero {
+  background: url("../images/banner.jpg") center/cover no-repeat;
+  text-align: center;
+  color: white;
+  padding: 80px 20px;
+}
+
+.hero h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  margin-bottom: 20px;
+}
+
+.hero button {
+  background: #ff9800;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.hero button:hover {
+  background: #e68900;
+}
+
+/* ===== Categories ===== */
+.categories {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.categories h2 {
+  margin-bottom: 20px;
+}
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+.cat-grid a {
+  display: block;
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  transition: transform 0.2s;
+}
+
+.cat-grid a:hover {
+  transform: translateY(-5px);
+  background: #fffae5;
+}
+
+/* ===== Deals ===== */
+.deals {
+  background: #fff3e0;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.deal-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+.deal {
+  background: white;
+  padding: 20px;
+  border-radius: 6px;
+  min-width: 200px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* ===== Reviews ===== */
+.reviews {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.reviews blockquote {
+  margin: 15px auto;
+  background: white;
+  padding: 15px;
+  border-left: 5px solid #ff9800;
+  width: 70%;
+  font-style: italic;
+}
+
+/* ===== Products Grid ===== */
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.product {
+  background: white;
+  padding: 15px;
+  border-radius: 6px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.product img {
+  max-width: 100%;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.product button {
+  background: #111;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.product button:hover {
+  background: #ff9800;
+}
+
+/* ===== Product Detail ===== */
+.product-detail {
+  padding: 20px;
+}
+
+.product-detail img {
+  max-width: 300px;
+  display: block;
+  margin-bottom: 15px;
+}
+
+/* ===== Footer ===== */
+footer {
+  background: #111;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  margin-top: 30px;
+}
+
+footer a {
+  color: #ff9800;
+  text-decoration: none;
+}
+
+/* ===== Chatbot Button ===== */
+#chatbot-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #ff9800;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+#chat-window {
+  display: none;
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  background: white;
+  border: 1px solid #ccc;
+  width: 250px;
+  height: 300px;
+  border-radius: 6px;
+  overflow: auto;
+  padding: 10px;
+}
